@@ -176,7 +176,7 @@ router.delete("/offer/delete/:id", isAuthentificated, async (req, res) => {
 });
 
 // route get offers
-router.get("/offers", async (req, res) => {
+router.get("/offers", isAuthentificated, async (req, res) => {
   try {
     const productName = new RegExp(req.query.title, "i");
     let priceMin = Number(req.query.priceMin);
@@ -228,7 +228,7 @@ router.get("/offers", async (req, res) => {
 // route get offer/:id
 // KEEP IT LAST
 
-router.get("/offer/:id", async (req, res) => {
+router.get("/offer/:id", isAuthentificated, async (req, res) => {
   try {
     const id = req.params.id;
     const offer = await Offer.findById(id).populate({
