@@ -178,6 +178,48 @@ router.delete("/offer/delete/:id", isAuthentificated, async (req, res) => {
 // route get offers
 router.get("/offers", async (req, res) => {
   try {
+    const productName = new RegExp(req.query.title, "i");
+    let priceMin = Number(req.query.priceMin);
+    let priceMax = Number(req.query.priceMax);
+    const limitByRequest = 5;
+    let page = Number(req.query.page) * limitByRequest;
+    let sortBy = req.query.sort;
+
+    // condition if params not present
+    // check if page exists
+    page ? page : (page = 0);
+    // check if sortBy exists
+    sortBy
+      ? sortBy === "price-desc"
+        ? (sortBy = -1)
+        : (sortBy = 1)
+      : (sortBy = 1);
+    // check if priceMin and Max exists
+    priceMin ? priceMin : (priceMin = 0);
+    priceMax ? priceMax : (priceMax = 999999);
+
+    // create a const filter with all filters from above
+    const filter = {
+      product_name: productName,
+      product_price: { $gte: priceMin, $lte: priceMax },
+    };
+    // create a sort with all possiblities
+    const sort = { product_price: sortBy };
+    // find Offers with filter and sort them
+    const offers = await Offer.find(filter)
+      .sort(sort)
+      .limit(limitByRequest)
+      .skip(page);
+    const count = await Offer.countDocuments(filter);
+    if (offers) {
+      res.json({
+        count: count,
+        page: page ? Number(req.query.page) : 0,
+        offers: offers,
+      });
+    } else {
+      res.status(400).json({ message: "Unanble to find the request" });
+    }
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -185,5 +227,23 @@ router.get("/offers", async (req, res) => {
 
 // route get offer/:id
 // KEEP IT LAST
+
+router.get("/offer/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const offer = await Offer.findById(id).populate({
+      path: "owner",
+      select: "account",
+    });
+
+    if (offer) {
+      res.json(offer);
+    } else {
+      res.json({ message: "Unable to find this id" });
+    }
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
 
 module.exports = router;
