@@ -176,6 +176,12 @@ router.delete("/offer/delete/:id", isAuthentificated, async (req, res) => {
 });
 
 // route get offers
+router.get("/offers", async (req, res) => {
+  try {
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
 
 // route get offer/:id
 // KEEP IT LAST
