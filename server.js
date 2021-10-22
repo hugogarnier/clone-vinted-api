@@ -21,7 +21,7 @@ cloudinary.config({
 // import routes - last one if page not found
 const authRoutes = require("./routes/auth");
 const offerRoutes = require("./routes/offer");
-const pageNotFoundRoutes = require("./routes/pageNotFound");
+const pageNotFoundRoutes = require("./routes/pageHomeNotFound");
 app.use(authRoutes);
 app.use(offerRoutes);
 app.use(pageNotFoundRoutes);
