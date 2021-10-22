@@ -11,6 +11,7 @@ Create a new user
 | `email`    | string | Yes      |
 | `password` | string | Yes      |
 | `username` | string | Yes      |
+| `picture`  | avatar | No       |
 | `phone`    | string | No       |
 
 <br>
@@ -26,13 +27,6 @@ Log a user
 | `password` | string | Yes      |
 
 <br>
-<br>
-
-### /reset-users (GET)
-
-This route resets the user database.
-Do not consider it.
-
 <br>
 
 ## Offer
@@ -77,7 +71,7 @@ Create a new offer
 | `condition`   | Yes      | product condition
 | `color`       | Yes      | offer color
 | `city`        | Yes      | the city in which the offer is located
-| `picture`     | Yes      | product picture
+| `pictures`     | Yes      | product picture
 
 <br>
 
@@ -135,8 +129,3 @@ Delete an offer
 
 <br>
 <br>
-
-### /reset-offers (GET)
-
-This route resets the offers database.
-Do not consider it.
