@@ -178,43 +178,46 @@ router.delete("/offer/delete/:id", isAuthentificated, async (req, res) => {
 // route get offers
 router.get("/offers", isAuthentificated, async (req, res) => {
   try {
+    const filters = {};
+    const sorts = {};
     const productName = new RegExp(req.query.title, "i");
-    let priceMin = Number(req.query.priceMin);
-    let priceMax = Number(req.query.priceMax);
-    const limitByRequest = 5;
-    let page = Number(req.query.page) * limitByRequest;
-    let sortBy = req.query.sort;
+    const priceMin = Number(req.query.priceMin);
+    const priceMax = Number(req.query.priceMax);
+    const sortBy = req.query.sort;
 
-    // condition if params not present
-    // check if page exists
-    page ? page : (page = 0);
+    productName && (filters.product_name = productName);
+    priceMin && (filters.product_price = { $gte: priceMin });
+    priceMax
+      ? filters.product_price
+        ? (filters.product_price.$lte = priceMax)
+        : (filters.product_price = { $lte: priceMax })
+      : null;
+
     // check if sortBy exists
     sortBy
       ? sortBy === "price-desc"
-        ? (sortBy = -1)
-        : (sortBy = 1)
-      : (sortBy = 1);
-    // check if priceMin and Max exists
-    priceMin ? priceMin : (priceMin = 0);
-    priceMax ? priceMax : (priceMax = 999999);
+        ? (sorts.product_price = -1)
+        : (sorts.product_price = 1)
+      : (sorts.product_price = 1);
 
-    // create a const filter with all filters from above
-    const filter = {
-      product_name: productName,
-      product_price: { $gte: priceMin, $lte: priceMax },
-    };
-    // create a sort with all possiblities
-    const sort = { product_price: sortBy };
+    let page = 1;
+    let limitByRequest = 5;
+    Number(req.query.page) ? (page = Number(req.query.page)) : page;
+    Number(req.query.limit)
+      ? (limitByRequest = Number(req.query.limit))
+      : limitByRequest;
+
     // find Offers with filter and sort them
-    const offers = await Offer.find(filter)
-      .sort(sort)
+    const offers = await Offer.find(filters)
+      .sort(sorts)
       .limit(limitByRequest)
-      .skip(page);
-    const count = await Offer.countDocuments(filter);
+      .skip((page - 1) * limitByRequest);
+
+    const count = await Offer.countDocuments(filters);
     if (offers) {
       res.json({
         count: count,
-        page: page ? Number(req.query.page) : 0,
+        page: page,
         offers: offers,
       });
     } else {
