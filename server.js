@@ -1,15 +1,15 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-const morgan = require("morgan");
 const cloudinary = require("cloudinary").v2;
+const cors = require("cors");
 
 // middleware import
 const middlewawreFormidable = require("express-formidable");
 
 const app = express();
 app.use(middlewawreFormidable());
-app.use(morgan("dev"));
+app.use(cors());
 
 // init cloudinary
 cloudinary.config({
