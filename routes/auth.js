@@ -14,7 +14,7 @@ router.post("/user/signup", async (req, res) => {
     const email = req.fields.email;
     const username = req.fields.username;
 
-    if (!email || !email.includes("@") || !username || username.length < 5) {
+    if (!email || !email.includes("@") || !username) {
       res.status(400).json({
         message: "Email or username invalid",
         email: "Email must have a @ and not be empty",
@@ -42,7 +42,7 @@ router.post("/user/signup", async (req, res) => {
         });
 
         // cloudinary upload
-        if (req.files.picture.path) {
+        if (Object.keys(req.files).length > 0) {
           try {
             let pictureToUpload = req.files.picture.path;
             const result = await cloudinary.uploader.upload(pictureToUpload, {
@@ -60,6 +60,15 @@ router.post("/user/signup", async (req, res) => {
           } catch (error) {
             res.json({ error: error.message });
           }
+        } else {
+          await newUser.save();
+          res.json({
+            message: "Account created 🔥",
+            _id: newUser.id,
+            token: newUser.token,
+            email: newUser.email,
+            account: newUser.account,
+          });
         }
       }
     }
