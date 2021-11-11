@@ -177,7 +177,7 @@ router.delete("/offer/delete/:id", isAuthentificated, async (req, res) => {
 });
 
 // route get offers
-router.get("/offers", isAuthentificated, async (req, res) => {
+router.get("/offers", async (req, res) => {
   try {
     const filters = {};
     const sorts = {};
