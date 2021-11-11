@@ -42,23 +42,24 @@ router.post("/user/signup", async (req, res) => {
         });
 
         // cloudinary upload
-
-        try {
-          let pictureToUpload = req.files.picture.path;
-          const result = await cloudinary.uploader.upload(pictureToUpload, {
-            folder: `/vinted/user/${newUser.id}`,
-          });
-          newUser.account.avatar = result;
-          await newUser.save();
-          res.json({
-            message: "Account created 🔥",
-            _id: newUser.id,
-            token: newUser.token,
-            email: newUser.email,
-            account: newUser.account,
-          });
-        } catch (error) {
-          res.json({ error: error.message });
+        if (req.files.picture.path) {
+          try {
+            let pictureToUpload = req.files.picture.path;
+            const result = await cloudinary.uploader.upload(pictureToUpload, {
+              folder: `/vinted/user/${newUser.id}`,
+            });
+            newUser.account.avatar = result;
+            await newUser.save();
+            res.json({
+              message: "Account created 🔥",
+              _id: newUser.id,
+              token: newUser.token,
+              email: newUser.email,
+              account: newUser.account,
+            });
+          } catch (error) {
+            res.json({ error: error.message });
+          }
         }
       }
     }
