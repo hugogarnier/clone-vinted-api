@@ -31,7 +31,7 @@ router.post("/offer/publish", isAuthentificated, async (req, res) => {
           { TAILLE: req.fields.size },
           { COULEUR: req.fields.color },
         ],
-        owner: req.user,
+        owner: req.user.account,
       });
 
       const fileKeys = Object.keys(req.files);
