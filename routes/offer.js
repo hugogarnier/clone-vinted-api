@@ -211,7 +211,8 @@ router.get("/offers", isAuthentificated, async (req, res) => {
     const offers = await Offer.find(filters)
       .sort(sorts)
       .limit(limitByRequest)
-      .skip((page - 1) * limitByRequest);
+      .skip((page - 1) * limitByRequest)
+      .populate("owner");
 
     const count = await Offer.countDocuments(filters);
     if (offers) {
