@@ -20,6 +20,7 @@ router.post("/offer/publish", isAuthentificated, async (req, res) => {
         .status(400)
         .json({ message: "Description too long max 500 characters" });
     } else {
+      console.log(req.user);
       const newOffer = new Offer({
         product_name: req.fields.title,
         product_description: req.fields.description,
@@ -31,7 +32,7 @@ router.post("/offer/publish", isAuthentificated, async (req, res) => {
           { TAILLE: req.fields.size },
           { COULEUR: req.fields.color },
         ],
-        owner: req.user.account,
+        owner: req.user,
       });
 
       const fileKeys = Object.keys(req.files);
