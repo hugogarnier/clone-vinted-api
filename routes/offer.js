@@ -233,22 +233,25 @@ router.get("/offers", async (req, res) => {
 // route get offer/:id
 // KEEP IT LAST
 
-router.get("/offer/:id", isAuthentificated, async (req, res) => {
-  try {
-    const id = req.params.id;
-    const offer = await Offer.findById(id).populate({
-      path: "owner",
-      select: "account",
-    });
+router.get(
+  "/offer/:id",
+  /*isAuthentificated,*/ async (req, res) => {
+    try {
+      const id = req.params.id;
+      const offer = await Offer.findById(id).populate({
+        path: "owner",
+        select: "account",
+      });
 
-    if (offer) {
-      res.json(offer);
-    } else {
-      res.json({ message: "Unable to find this id" });
+      if (offer) {
+        res.json(offer);
+      } else {
+        res.json({ message: "Unable to find this id" });
+      }
+    } catch (error) {
+      res.status(400).json({ error: error.message });
     }
-  } catch (error) {
-    res.status(400).json({ error: error.message });
   }
-});
+);
 
 module.exports = router;
