@@ -201,7 +201,7 @@ router.get("/offers", async (req, res) => {
       : (sorts.product_price = 1);
 
     let page = 1;
-    let limitByRequest = 5;
+    let limitByRequest = 10;
     Number(req.query.page) ? (page = Number(req.query.page)) : page;
     Number(req.query.limit)
       ? (limitByRequest = Number(req.query.limit))
