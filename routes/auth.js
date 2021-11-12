@@ -15,7 +15,7 @@ router.post("/user/signup", async (req, res) => {
     const username = req.fields.username;
 
     if (!email || !email.includes("@") || !username) {
-      res.status(400).json({
+      res.status(401).json({
         message: "Email or username invalid",
         email: "Email must have a @ and not be empty",
         username: "Username cannot be empty and at least 5 characters",
@@ -23,7 +23,7 @@ router.post("/user/signup", async (req, res) => {
     } else {
       const userExists = await User.findOne({ email: email });
       if (userExists) {
-        res.status(400).json({ message: `User ${email} already exists` });
+        res.status(401).json({ message: `User ${email} already exists` });
       } else {
         const password = req.fields.password;
         const salt = uid2(16);
@@ -90,7 +90,7 @@ router.post("/user/login", async (req, res) => {
     } else {
       const user = await User.findOne({ email: email });
       if (!user) {
-        res.status(400).json({ message: "Unauthorized" });
+        res.status(401).json({ message: "Unauthorized" });
       } else {
         const hash = SHA256(password + user.salt).toString(encBase64);
         const token = uid2(16);
