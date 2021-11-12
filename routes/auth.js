@@ -90,14 +90,14 @@ router.post("/user/login", async (req, res) => {
     } else {
       const user = await User.findOne({ email: email });
       if (!user) {
-        res.status(400).json({ message: `User ${email} not found 😰` });
+        res.status(400).json({ message: "Unauthorized" });
       } else {
         const hash = SHA256(password + user.salt).toString(encBase64);
         const token = uid2(16);
 
         if (hash !== user.hash) {
           res.status(401).json({
-            message: `Wrong password, you are not authorized to login 😡`,
+            message: "Unauthorized",
           });
         } else {
           user.token = token;
