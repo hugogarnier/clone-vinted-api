@@ -12,12 +12,12 @@ const Offer = require("../models/Offer");
 router.post("/offer/publish", isAuthentificated, async (req, res) => {
   try {
     if (req.fields.title.length > 50) {
-      res.status(401).json({ message: "Title too long max 50 characters" });
+      res.status(400).json({ message: "Title too long max 50 characters" });
     } else if (req.fields.price > 10000) {
-      res.status(401).json({ message: "Price too great max price is 10000" });
+      res.status(400).json({ message: "Price too great max price is 10000" });
     } else if (req.fields.description.length > 500) {
       res
-        .status(401)
+        .status(400)
         .json({ message: "Description too long max 500 characters" });
     } else {
       const newOffer = new Offer({
