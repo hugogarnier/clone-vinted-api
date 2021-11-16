@@ -264,16 +264,17 @@ router.get(
 router.post("/pay", isAuthentificated, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).populate("payment");
-    console.log(user);
+    // console.log(user);
     const stripeToken = req.fields.stripeToken;
     const response = await stripe.charges.create({
-      amount: req.fields.amount,
+      amount: req.fields.amount * 100,
       currency: "eur",
       description: req.fields.description,
       source: stripeToken,
     });
-    console.log(response.status);
-    // user.payment.push()
+    // console.log(response.status);
+    user.payment.push(response);
+    user.save();
 
     res.json(response);
   } catch (error) {
