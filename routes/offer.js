@@ -7,6 +7,7 @@ const isAuthentificated = require("../middleware/isAuthentificated");
 
 // models
 const Offer = require("../models/Offer");
+const User = require("../models/User");
 
 // publish announce
 router.post("/offer/publish", isAuthentificated, async (req, res) => {
@@ -242,8 +243,14 @@ router.get(
         select: "account",
       });
 
+      const user = await User.findOne({
+        token: req.headers.authorization.replace("Bearer ", ""),
+      })
+        .populate("account")
+        .select("id account");
+
       if (offer) {
-        res.json(offer);
+        res.json({ offer, user });
       } else {
         res.json({ message: "Unable to find this id" });
       }
