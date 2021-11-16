@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const cloudinary = require("cloudinary").v2;
+const stripe = require("stripe")(process.env.STRIPE_SECRET_API_KEY);
 
 // middleware
 const isAuthentificated = require("../middleware/isAuthentificated");
@@ -259,5 +260,25 @@ router.get(
     }
   }
 );
+
+router.post("/pay", isAuthentificated, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).populate("payment");
+    console.log(user);
+    const stripeToken = req.fields.stripeToken;
+    const response = await stripe.charges.create({
+      amount: req.fields.amount,
+      currency: "eur",
+      description: req.fields.description,
+      source: stripeToken,
+    });
+    console.log(response.status);
+    // user.payment.push()
+
+    res.json(response);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
 
 module.exports = router;
